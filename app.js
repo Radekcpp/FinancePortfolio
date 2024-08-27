@@ -55,4 +55,21 @@ app.post('/add_stock', async (req, res) => {
 
 });
 
+app.delete('/delete_stock/:id', async (req, res) => {
+    const stockId = req.params.id;
+
+    try {
+        const result = await Stock.destroy({ where: { id: stockId } });
+        
+        if (result) {
+            res.status(200).json({ message: `Stock with ID ${stockId} deleted successfully.` });
+        } else {
+            res.status(404).json({ message: `Stock with ID ${stockId} not found.` });
+        }
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+
 app.listen(port, () => console.log(`Exchange app listening on port ${port}!`))
