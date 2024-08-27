@@ -41,5 +41,18 @@ const Stock = sequelize.define('stock_model', {
         timestamps: false,
 })
 
+app.post('/add_stock', async (req, res) => {
+
+    const { username, stock_name, amount_bought, date_of_buying, price_per_share } = req.body;
+
+    try {
+      const newStock = await Stock.create({ username, stock_name, amount_bought, date_of_buying, price_per_share});
+      console.log(newStock);
+      res.status(201).json({ message: 'Stock added successfully', id: newStock.id });
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+    }
+
+});
 
 app.listen(port, () => console.log(`Exchange app listening on port ${port}!`))
