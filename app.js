@@ -42,4 +42,21 @@ const Stock = sequelize.define('stock_model', {
 })
 
 
+// Getting information of one specific user : 
+app.get('/get_user_info', async (req, res) => {
+    const { username } = req.query;
+    try {
+        const var_share_information = await Stock.findAll(
+        {
+            where: {
+                username: username  
+            }
+        }); 
+        res.json(var_share_information);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+
 app.listen(port, () => console.log(`Exchange app listening on port ${port}!`))
