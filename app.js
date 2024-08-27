@@ -41,6 +41,17 @@ const Stock = sequelize.define('stock_model', {
         timestamps: false,
 })
 
+// Getting information, without having to put a query parameter : 
+app.get('/get_all_user_info', async (req, res) => {
+    
+    try {
+        const var_share_information = await Stock.findAll();
+        res.json(var_share_information);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
 
 // Getting information of one specific user : 
 app.get('/get_user_info', async (req, res) => {
