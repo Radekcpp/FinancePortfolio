@@ -1,16 +1,16 @@
 //Imports
 const express = require('express');
 const axios = require('axios');
-
+require("dotenv").config();
 //Express Definition/Variables
-const app = express()
-const port = 3000
+const app = express();
+const port = 3000;
 //const apiKey = "4bb4629b19c8d2e1fd3dd512"
 app.use(express.json());
-
+const password = process.env.PASSWORD
 const { Sequelize, DataTypes } = require("sequelize");
 
-const sequelize = new Sequelize('stock', 'root', 'c0nygre', {
+const sequelize = new Sequelize('stock', 'root', password, {
     host: "hsbcpolanddocker1.neueda.com",
     dialect: 'mysql',
 })
@@ -95,6 +95,36 @@ app.put('/update_stock/:id', async (req, res) => {
     }
 });
 
+
+app.post('/add_stock', async (req, res) => {
+
+    const { username, stock_name, amount_bought, date_of_buying, price_per_share } = req.body;
+
+    try {
+      const newStock = await Stock.create({ username, stock_name, amount_bought, date_of_buying, price_per_share});
+      console.log(newStock);
+      res.status(201).json({ message: 'Stock added successfully', id: newStock.id });
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+    }
+
+});
+
+app.delete('/delete_stock/:id', async (req, res) => {
+    const stockId = req.params.id;
+
+    try {
+        const result = await Stock.destroy({ where: { id: stockId } });
+        
+        if (result) {
+            res.status(200).json({ message: `Stock with ID ${stockId} deleted successfully.` });
+        } else {
+            res.status(404).json({ message: `Stock with ID ${stockId} not found.` });
+        }
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
 
 
 app.listen(port, () => console.log(`Exchange app listening on port ${port}!`))
