@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="menu_styless.css" />
+  </head>
+  <body>
+    <button class="tablink" onclick="openPage('Home', this)" id="defaultOpen">
+      Your portfolio
+    </button>
+    <button class="tablink" onclick="openPage('News', this, 'green')">
+      Update stocks
+    </button>
+    <button class="tablink" onclick="openPage('Contact', this, 'blue')">
+      Charts
+    </button>
+    <button class="tablink" onclick="openPage('About', this, 'orange')">
+      Random news
+    </button>
+
+    <div id="Home" class="tabcontent">
+      <h2 class="h2">Hello,</h2>
+      <p class="p">You have ... PLN from ... stocks</p>
+      <br />
+      <p class="p">Your last activity ...</p>
+    </div>
+
+    <div id="News" class="tabcontent">
+      <h3>Update Your stocks</h3>
+      <div class="container">
+        <label for="uname"><b>Choose stocks from the list</b></label>
+        <div class="container">
+          <div class="scroll-box">
+            <ul id="productList" class="item-list">
+              <li onclick="selectProduct('Sugar')">Sugar</li>
+              <li onclick="selectProduct('Milk')">Milk</li>
+              <li onclick="selectProduct('Bread')">Bread</li>
+              <li onclick="selectProduct('Eggs')">Eggs</li>
+              <li onclick="selectProduct('Butter')">Butter</li>
+              <li onclick="selectProduct('Cheese')">Cheese</li>
+              <li onclick="selectProduct('Apples')">Apples</li>
+              <li onclick="selectProduct('Bananas')">Bananas</li>
+              <li onclick="selectProduct('Tomatoes')">Tomatoes</li>
+              <li onclick="selectProduct('Potatoes')">Potatoes</li>
+            </ul>
+          </div>
+        
+          <div class="input-panel">
+            <p>Selected Product: <span id="selectedProduct">None</span></p>
+            <input type="number" id="productQuantity" placeholder="Enter quantity" min="1" />
+            <button onclick="addToCart()">Add to Cart</button>
+          </div>
+        
+          <div class="output-panel">
+            <h3>Shopping Cart</h3>
+            <ul id="cartList"></ul>
+          </div>
+        </div>
+<script>let selectedProduct = null;
+
+  function selectProduct(productName) {
+    selectedProduct = productName;
+    document.getElementById("selectedProduct").innerText = productName;
+  }
+  
+  function addToCart() {
+    if (selectedProduct) {
+      const quantity = document.getElementById("productQuantity").value;
+      if (quantity > 0) {
+        const cartList = document.getElementById("cartList");
+        const listItem = document.createElement("li");
+        listItem.innerText = `${selectedProduct}: ${quantity} units`;
+        cartList.appendChild(listItem);
+      } else {
+        alert("Please enter a valid quantity.");
+      }
+    } else {
+      alert("Please select a product first.");
+    }
+  }</script>
+        <input type="number" placeholder="Number of stocks" name="uname" required />
+
+        <button type="submit"><b>Login</b></button>
+      </div>
+      <div class="container">
+        <label for="uname"><b>Username</b></label>
+        <input type="text" placeholder="Enter Username" name="uname" required />
+
+        <button type="submit"><b>Login</b></button>
+      </div>
+      <div class="container">
+        <label for="uname"><b>Username</b></label>
+        <input type="text" placeholder="Enter Username" name="uname" required />
+
+        <button type="submit"><b>Login</b></button>
+      </div>
+    </div>
+
+    <div id="Contact" class="tabcontent">
+      <h3>Contact</h3>
+      <p>Get in touch, or swing by for a cup of coffee.</p>
+    </div>
+
+    <div id="About" class="tabcontent">
+      <h3 class="h3">Let us show You some random news from WikiNews</h2>
+      <p>
+        <iframe
+          id="wikiFrame"
+          src="https://en.wikinews.org/wiki/Special:random"
+          style="width: 80%; height: 500px; border: none; margin-left: 200px"
+        ></iframe>
+      </p>
+      <div class="button-container">
+        <button onclick="refreshFrame()">Refresh</button>
+      </div>
+    </div>
+
+    <script>
+      function refreshFrame() {
+        var iframe = document.getElementById("wikiFrame");
+        iframe.src = iframe.src; // Reloads the iframe by setting the src attribute to itself
+      }
+    </script>
+
+    <script>
+      function openPage(pageName, elmnt) {
+        var i, tabcontent, tablinks;
+
+        // Hide all tab contents
+        tabcontent = document.getElementsByClassName("tabcontent");
+        for (i = 0; i < tabcontent.length; i++) {
+          tabcontent[i].style.display = "none";
+        }
+
+        // Remove background color from all buttons
+        tablinks = document.getElementsByClassName("tablink");
+        for (i = 0; i < tablinks.length; i++) {
+          tablinks[i].style.backgroundColor = "";
+        }
+
+        // Show the current tab content
+        document.getElementById(pageName).style.display = "block";
+
+        // Get the background color of the tab content and apply it to the button
+        var backgroundColor = window.getComputedStyle(
+          document.getElementById(pageName)
+        ).backgroundColor;
+        elmnt.style.backgroundColor = backgroundColor;
+      }
+
+      // Automatically click on the default open tab
+      document.getElementById("defaultOpen").click();
+    </script>
+  </body>
+</html>
