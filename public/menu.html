@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="stylesheet" href="menu_styless.css" />
+    <link rel="stylesheet" href="menu_styles.css" />
   </head>
   <body>
     <button class="tablink" onclick="openPage('Home', this)" id="defaultOpen">
@@ -19,10 +19,31 @@
     </button>
 
     <div id="Home" class="tabcontent">
-      <h2 class="h2">Hello,</h2>
+    <script>
+
+const username = localStorage.getItem('username')  
+
+fetch(`/get_user_info?username=username`)
+        .then(response => response.json()) // Parse the JSON response from the server
+        .then(data => {
+          const tableBody = document.getElementById('tableBody');
+          data.forEach(item => {
+                      const row = `<tr>
+                                    <td>${item.username}</td>
+                                    <td>${item.stock_name}</td>
+                                    <td>${item.amount_bought}</td>
+                                    <td>${item.date_of_buying}</td>
+                                    <td>${item.price_per_sher}</td>
+                                  </tr>`;
+          tableBody.insertAdjecentHTML('beforeend',row);
+                      });
+                    });
+
+    </script>  
+      <!-- <h2 class="h2">Hello, </h2>
       <p class="p">You have ... PLN from ... stocks</p>
       <br />
-      <p class="p">Your last activity ...</p>
+      <p class="p">Your last activity ...</p> -->
     </div>
 
     <div id="News" class="tabcontent">

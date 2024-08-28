@@ -7,6 +7,7 @@ const app = express();
 const port = 3000;
 //const apiKey = "4bb4629b19c8d2e1fd3dd512"
 app.use(express.json());
+app.use(express.static('public'));
 const password = process.env.PASSWORD
 const { Sequelize, DataTypes } = require("sequelize");
 
