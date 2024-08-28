@@ -41,5 +41,60 @@ const Stock = sequelize.define('stock_model', {
         timestamps: false,
 })
 
+// Getting information, without having to put a query parameter : 
+app.get('/get_all_user_info', async (req, res) => {
+    
+    try {
+        const var_share_information = await Stock.findAll();
+        res.json(var_share_information);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+
+// Getting information of one specific user : 
+app.get('/get_user_info', async (req, res) => {
+    const { username } = req.query;
+    try {
+        const var_share_information = await Stock.findAll(
+        {
+            where: {
+                username: username  
+            }
+        }); 
+        res.json(var_share_information);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// changing date and amount_bought
+// PUT endpoint : 
+app.put('/update_stock/:id', async (req, res) => {
+    const stockId = req.params.id;
+    const { amount_bought, date_of_buying } = req.body;
+ 
+    try {
+        // Finding  the stock by ID
+        const stock = await Stock.findByPk(stockId);
+ 
+        if (!stock) {
+            return res.status(404).json({ message: `Stock with ID ${stockId} not found.` });
+        }
+ 
+        // Updating amount bought and date_of_buying
+        stock.amount_bought = amount_bought !== undefined ? amount_bought : stock.amount_bought;
+        stock.date_of_buying = date_of_buying !== undefined ? date_of_buying : stock.date_of_buying;
+ 
+        await stock.save(); // Saving the changes
+ 
+        res.status(200).json({ message: `Stock with ID ${stockId} updated successfully.`, stock });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+
 
 app.listen(port, () => console.log(`Exchange app listening on port ${port}!`))
