@@ -69,5 +69,32 @@ app.get('/get_user_info', async (req, res) => {
     }
 });
 
+// changing date and amount_bought
+// PUT endpoint : 
+app.put('/update_stock/:id', async (req, res) => {
+    const stockId = req.params.id;
+    const { amount_bought, date_of_buying } = req.body;
+ 
+    try {
+        // Finding  the stock by ID
+        const stock = await Stock.findByPk(stockId);
+ 
+        if (!stock) {
+            return res.status(404).json({ message: `Stock with ID ${stockId} not found.` });
+        }
+ 
+        // Updating amount bought and date_of_buying
+        stock.amount_bought = amount_bought !== undefined ? amount_bought : stock.amount_bought;
+        stock.date_of_buying = date_of_buying !== undefined ? date_of_buying : stock.date_of_buying;
+ 
+        await stock.save(); // Saving the changes
+ 
+        res.status(200).json({ message: `Stock with ID ${stockId} updated successfully.`, stock });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+
 
 app.listen(port, () => console.log(`Exchange app listening on port ${port}!`))
