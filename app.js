@@ -1,16 +1,16 @@
 //Imports
 const express = require('express');
 const axios = require('axios');
-
+require("dotenv").config();
 //Express Definition/Variables
-const app = express()
-const port = 3000
+const app = express();
+const port = 3000;
 //const apiKey = "4bb4629b19c8d2e1fd3dd512"
 app.use(express.json());
-
+const password = process.env.PASSWORD
 const { Sequelize, DataTypes } = require("sequelize");
 
-const sequelize = new Sequelize('stock', 'root', 'c0nygre', {
+const sequelize = new Sequelize('stock', 'root', password, {
     host: "hsbcpolanddocker1.neueda.com",
     dialect: 'mysql',
 })
