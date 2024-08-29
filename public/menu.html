@@ -64,7 +64,7 @@
                   Stock ${index + 1}: ${item.stock_name} <br>
                   Amount Bought: ${item.amount_bought} <br>
                   Date of Buying: ${item.date_of_buying} <br>
-                  Price per Share: ${item.price_per_share}
+                  Price per Share: ${item.price_per_share} USD
                 </p>
                 <hr><br>
               `;
@@ -83,12 +83,63 @@
         <form id="loginForm" action="/menu.html">
             <h4 class="h4">You can add or remove your stocks</h4><br>
             <div class="input-panel">
-            <center><input type="text" id="usernameInput" placeholder="Insert stock name" name="add" required />
-            <input type="date" id="amount" placeholder="YYYY-MM-DD" name="Add amount" required />
-            <input type="number" id="productQuantity" placeholder="Enter quantity" min="1" /></center>
+              <center>
+                <input type="text" id="stockNameInput" placeholder="Insert stock name" name="stock_name" required />
+                <input type="date" id="dateInput" placeholder="YYYY-MM-DD" name="date_of_buying" required />
+                <input type="number" id="amountInput" placeholder="Enter quantity" name="amount_bought" min="1" required />
+                <input type="number" id="priceInput" placeholder="Enter price per share in USD" name="price_per_share" step="0.01" required />
+              </center>
+              <br>
+              <center><button type="button" id="addStockButton"><b>Add</b></button></center>
             </div>
-            <br>
-            <center><button type="submit" id="fetchDataButton"><b>Add</b></button>
+            
+            <script>
+                document.getElementById('addStockButton').addEventListener('click', function() {
+                    const stockName = document.getElementById('stockNameInput').value.trim();
+                    const dateOfBuying = document.getElementById('dateInput').value;
+                    const amountBought = document.getElementById('amountInput').value;
+                    const pricePerShare = document.getElementById('priceInput').value;
+            
+                    if (stockName === '' || dateOfBuying === '' || amountBought === '' || pricePerShare === '') {
+                        alert('Please fill in all the fields.');
+                        return;
+                    }
+            
+                    const stockData = {
+                        username: localStorage.getItem('username'),  // Assuming username is stored in localStorage
+                        stock_name: stockName,
+                        amount_bought: amountBought,
+                        date_of_buying: dateOfBuying,
+                        price_per_share: pricePerShare
+                    };
+            
+                    fetch('/add_stock', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(stockData),
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.id) {
+                            alert(`Stock "${stockName}" added successfully.`);
+                            // Optionally, clear the form inputs
+                            document.getElementById('stockNameInput').value = '';
+                            document.getElementById('dateInput').value = '';
+                            document.getElementById('amountInput').value = '';
+                            document.getElementById('priceInput').value = '';
+                        } else {
+                            alert('Failed to add the stock. Please try again.');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error adding stock:', error);
+                        alert('An error occurred while adding the stock. Please try again.');
+                    });
+                });
+            </script>
+            
             <div class="input-panel">
             <hr class="hr1"><br>
             <center><input type="text" id="stockNameInput" placeholder="Insert stock name" name="add" required />

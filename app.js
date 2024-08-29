@@ -192,7 +192,7 @@ app.get('/get_stock_by_name', async (req, res) => {
     const stockName = req.query.stockName;
 
     try {
-        const stock = await Stock.findOne({ where: { name: stockName } });
+        const stock = await Stock.findOne({ where: { stock_name: stockName } });
 
         if (stock) {
             res.status(200).json({ id: stock.id });
