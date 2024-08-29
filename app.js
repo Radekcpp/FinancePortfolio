@@ -221,5 +221,113 @@ app.delete('/delete_stock/:id', async (req, res) => {
     }
 });
  
- 
+async function fetchStockData(stock) {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0'); // getMonth() is 0-based
+    const day = String(today.getDate()).padStart(2, '0');
+    const todaysDate = `${year}-${month}-${day}`;
+
+    // Calculate date 3 months prior
+    const threeMonthsAgo = new Date(today);
+    threeMonthsAgo.setMonth(today.getMonth() - 3);
+    const yearThreeMonthsPrior = threeMonthsAgo.getFullYear();
+    const monthThreeMonthsPrior = String(threeMonthsAgo.getMonth() + 1).padStart(2, '0');
+    const dayThreeMonthsPrior = String(threeMonthsAgo.getDate()).padStart(2, '0');
+    const dateThreeMonthsPrior = `${yearThreeMonthsPrior}-${monthThreeMonthsPrior}-${dayThreeMonthsPrior}`;
+
+    const url = `https://api.polygon.io/v2/aggs/ticker/${stock}/range/1/day/${dateThreeMonthsPrior}/${todaysDate}?apiKey=${apiKey}`;
+    const response = await axios.get(url);
+
+    // Ensure that response.data.results is valid
+    if (!Array.isArray(response.data.results)) {
+        console.log("========================================")
+        console.log(typeof(response.data.results))
+        throw new Error('Invalid response format from Polygon.io API');
+    }
+
+    // Extract the opening prices and dates from the response
+    const stockData = response.data.results;
+    const openingPrices = stockData.map(data => {
+        if (!data.t || !data.o) {
+            console.error('Invalid data format:', data);
+            return null;
+        }
+        return {
+            date: new Date(data.t).toISOString().split('T')[0],
+            open: data.o
+        };
+    }).filter(item => item !== null);
+
+    return openingPrices;
+}
+
+async function calculateNetWorth(stocks, amounts) {
+    let netWorthData = {};
+
+    // Fetch and aggregate stock data
+    for (let i = 0; i < stocks.length; i++) {
+        const stock = stocks[i];
+        const amount = amounts[i];
+        const stockData = await fetchStockData(stock);
+
+        stockData.forEach(data => {
+            const date = data.date; // Use the formatted date
+            if (!netWorthData[date]) {
+                netWorthData[date] = 0;
+            }
+            netWorthData[date] += data.open * amount; // Multiply by amount
+        });
+    }
+
+    // Prepare data for Chart.js
+    const dates = Object.keys(netWorthData).sort();
+    const values = dates.map(date => netWorthData[date]);
+
+    return { dates, values };
+}
+
+// Serve the chart
+app.get('/chart', async (req, res) => {
+    // let stocks = [];
+    // let amounts = [];
+    // stocks.push("AMZN");
+    // stocks.push("GOOGL");
+    // amounts.push(60)
+    // amounts.push(160)
+    const { username } = req.query;
+
+    if (!username) {
+        return res.status(400).json({ error: 'Username is required' });
+    }
+
+
+    // Query the database for the user's stocks and amounts
+    const stocksInfo = await Stock.findAll({
+        where: { username },
+        attributes: ['stock_name', 'amount_bought']
+    });
+
+    console.log("STOCKSINFO");
+    console.log(stocksInfo);
+
+    const stocks = stocksInfo.map(stock => stock.dataValues.stock_name);
+    const amounts = stocksInfo.map(stock => stock.dataValues.amount_bought);
+
+
+    console.log(stocks);
+    console.log(amounts);
+    const days = 64;
+    const netWorths = await calculateNetWorth(stocks, amounts);
+
+    const today = new Date();
+    const dates = Array.from({ length: days }, (_, i) => {
+        const date = new Date();
+        date.setDate(today.getDate() - (days - i));
+        return date.toISOString().split('T')[0];
+    }).reverse();
+
+    res.json({ dates, values: netWorths })
+});
+
 app.listen(port, () => console.log(`Exchange app listening on port ${port}!`))

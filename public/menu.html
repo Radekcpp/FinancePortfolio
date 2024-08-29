@@ -212,7 +212,75 @@
     </div>
 
     <div id="Contact" class="tabcontent">
-      <h2 class="h2">Track Your finances with charts</h2>
+      <h2 class="h2">Track Your finances with charts</h2><br>
+      <div class="container1">
+        <canvas id="netWorthChart" width="400" height="200"></canvas>
+        <!-- Include Moment.js -->
+        <script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/min/moment.min.js"></script>
+        <!-- Include Chart.js -->
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <!-- Include the date adapter for Moment.js -->
+        <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-moment@1.0.0"></script>
+        <script>
+        function convertToISO(dateString) {
+          return new Date(dateString + 'T00:00:00Z').toISOString();
+          }
+          async function fetchChartData() {
+              try {
+                // Fetch the data from the server
+                  const response = await fetch('/chart?username=john_doe');
+                  const data = await response.json();
+
+                  const isoDates = data.dates.map(convertToISO);
+                // Ensure the canvas element is selected
+
+                  const ctx = document.getElementById('netWorthChart').getContext('2d');
+
+                // Create a new chart instance
+                  new Chart(ctx, {
+                      type: 'line',
+                      data: {
+                          labels: isoDates, // X-axis labels
+                          datasets: [{
+                              label: 'Net Worth Over Time',
+                              data: data.values.values, // Y-axis data
+                              borderColor: 'rgba(75, 192, 192, 1)',
+                              backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                              fill: true,
+                              tension: 0.1
+                          }]
+                      },
+                      options: {
+                          scales: {
+                              x: {
+                                  type: 'time',
+                                  time: {
+                                      unit: 'day'
+                                  },
+                                  title: {
+                                      display: true,
+                                      text: 'Date'
+                                  }
+                              },
+                              y: {
+                                  title: {
+                                      display: true,
+                                      text: 'Net Worth'
+                                  }
+                              }
+                          }
+                      }
+                  });
+              } catch (error) {
+                  console.error('Error fetching chart data:', error);
+              }
+          }
+
+          // Fetch the chart data and render the chart
+          fetchChartData();
+        </script>
+
+      </div>
     </div>
 
     <div id="About" class="tabcontent">
@@ -220,7 +288,7 @@
       <p>
         <iframe
           id="wikiFrame"
-          src="https://newsapi.org/v2/everything?q=tesla&from=2024-07-29&sortBy=publishedAt&apiKey=API_KEY"
+          src="https://newsapi.org/v2/everything?q=tesla&from=2024-07-29&sortBy=publishedAt&apiKey=5f30324846af41dc8598afae80ecdaad"
           style="width: 80%; height: 500px; border: none; margin-left: 200px"
         ></iframe>
       </p>
