@@ -19,27 +19,47 @@
     </button>
 
     <div id="Home" class="tabcontent">
-    <script>
-
-const username = localStorage.getItem('username')  
-
-fetch(`/get_user_info?username=username`)
-        .then(response => response.json()) // Parse the JSON response from the server
-        .then(data => {
-          const tableBody = document.getElementById('tableBody');
-          data.forEach(item => {
-                      const row = `<tr>
-                                    <td>${item.username}</td>
-                                    <td>${item.stock_name}</td>
-                                    <td>${item.amount_bought}</td>
-                                    <td>${item.date_of_buying}</td>
-                                    <td>${item.price_per_sher}</td>
-                                  </tr>`;
-          tableBody.insertAdjecentHTML('beforeend',row);
-                      });
-                    });
-
-    </script>  
+      <h2>hell world</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Username</th>
+            <th>Stock Name</th>
+            <th>Amount Bought</th>
+            <th>Date of Buying</th>
+            <th>Price per Share</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody">
+          <!-- Rows will be dynamically inserted here by JavaScript -->
+        </tbody>
+      </table>
+      <script>
+        // Retrieve the username from localStorage
+        const username = localStorage.getItem('username');
+      
+        // Fetch user information from the server
+        fetch(`/get_user_info?username=${username}`)
+          .then(response => response.json()) // Parse the JSON response from the server
+          .then(data => {
+            // Get the table body element where rows will be inserted
+            const tableBody = document.getElementById('tableBody');
+            
+            // Loop through each item in the data array and create a table row
+            data.forEach(item => {
+              const row = `<tr>
+                            <td>${item.username}</td>
+                            <td>${item.stock_name}</td>
+                            <td>${item.amount_bought}</td>
+                            <td>${item.date_of_buying}</td>
+                            <td>${item.price_per_share}</td> <!-- Corrected the typo in 'price_per_sher' -->
+                          </tr>`;
+              // Insert the row into the table body
+              tableBody.insertAdjacentHTML('beforeend', row);
+            });
+          })
+          .catch(error => console.error('Error fetching user info:', error));
+      </script>
       <!-- <h2 class="h2">Hello, </h2>
       <p class="p">You have ... PLN from ... stocks</p>
       <br />

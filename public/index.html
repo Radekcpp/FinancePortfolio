@@ -40,7 +40,31 @@
       <li></li>
     </ul>
 
-<form action="/menu.html">
+<!-- HTML Form -->
+<form id="loginForm" action="/menu.html">
+  <div class="container">
+    <label for="username" class="label1"><b>Username</b></label>
+    <input type="text" id="usernameInput" placeholder="Enter Username" name="username" required />
+
+    <button type="submit" id="fetchDataButton"><b>Login</b></button>
+  </div>
+</form>
+
+<!-- JavaScript -->
+<script>
+  // Get the form element
+  const loginForm = document.getElementById('loginForm');
+
+  // Add an event listener to handle form submission
+  loginForm.addEventListener('submit', function(event) {
+    // Get the username value from the input field
+    const username = document.getElementById('usernameInput').value;
+
+    // Store the username in localStorage
+    localStorage.setItem('username', username);
+  });
+</script>
+<!-- <form action="/menu.html">
       <div class="container">
         <label for="username" class="label1"><b>Username</b></label>
         <input type="text" id="usernameInput" placeholder="Enter Username" name="username" required />
@@ -52,7 +76,7 @@
 <script>
   const username = document.getElementById('usernameInput').value;
   localStorage.setItem('username', username)
-</script>  
+</script>   -->
     <!-- <script>
       document.getElementById('fetchDataButton').addEventListener('click', function() {
           // Call the GET endpoint
