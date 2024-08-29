@@ -192,42 +192,26 @@ app.get('/calculate_profit_and_networth', async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 });
+
+app.get('/getting_current_price', async (req, res) => {
+    const { stock_name } = req.query;
+
+    const apiUrl = `https://api.polygon.io/v2/aggs/ticker/${stock_name}/range/1/day/2023-01-09/2023-02-10?adjusted=true&sort=asc&apiKey=zRfpponTPZJx86i5Vezn8VEivUng6cjO`
+
+    // Make a GET request to the external API
+    const response = await axios.get(apiUrl);
+
+    // Extract data from the response
+    const data = response.data.results[0].o;
+    console.log(data);
+
+    // Send the data as the response
+    res.json(data);
+
+})
 //========================================================================================================\\
 //BELOW DATA FOR CHARTS EITHER DELETE (BE MINDFUL OF APP.LISTEN AT THE END), COMMENT OR IGNORE IT :)))
 //==========================================================================================================\\
-
-
-
-//CHARTS
-// Fetch daily historical data for each stock
-// async function fetchStockData(stock) {
-//     const today = new Date();
-//     //end date - today
-//     const year = today.getFullYear();
-//     const month = String(today.getMonth() + 1).padStart(2, '0'); // getMonth() returns 0-based month
-//     const day = String(today.getDate()).padStart(2, '0');
-
-//     const todaysDate = `${year}-${month}-${day}`;
-//     //start date - 3 months prior
-//     const threeMonthsAgo = new Date(today);
-//     threeMonthsAgo.setMonth(today.getMonth() - 3);
-
-//     // Extract year, month, day from threeMonthsAgo
-//     const yearThreeMonthsPrior = threeMonthsAgo.getFullYear();
-//     const monthThreeMonthsPrior = String(threeMonthsAgo.getMonth() + 1).padStart(2, '0'); // getMonth() is 0-based
-//     const dayThreeMonthsPrior = String(threeMonthsAgo.getDate()).padStart(2, '0');
-
-//     // Format the date correctly
-//     const dateThreeMonthsPrior = `${yearThreeMonthsPrior}-${monthThreeMonthsPrior}-${dayThreeMonthsPrior}`;
-//     const url = `https://api.polygon.io/v2/aggs/ticker/${stock}/range/1/day/${dateThreeMonthsPrior}/${todaysDate}?apiKey=${apikey}`;
-//     const response = await axios.get(url);
-    
-//     // Extract the opening prices from the response
-//     const stockData = response.data.results;
-//     const openingPrices = stockData.map(data => data.o); // 'o' is the opening price
-
-//     return openingPrices;
-// }
 
 async function fetchStockData(stock) {
     const today = new Date();
@@ -294,12 +278,15 @@ async function calculateNetWorth(stocks, amounts) {
 
     return { dates, values };
 }
+
 // Serve the chart
 app.get('/chart', async (req, res) => {
     let stocks = [];
     let amounts = [];
     stocks.push("AMZN");
+    stocks.push("GOOGL");
     amounts.push(60)
+    amounts.push(160)
     const days = 64;
     const netWorths = await calculateNetWorth(stocks, amounts);
 
@@ -309,24 +296,9 @@ app.get('/chart', async (req, res) => {
         date.setDate(today.getDate() - (days - i));
         return date.toISOString().split('T')[0];
     }).reverse();
-    console.log(dates, netWorths);
+
     res.json({ dates, values: netWorths })
 });
-app.get('/getting_current_price', async (req, res) => {
-    const { stock_name } = req.query;
 
-    const apiUrl = `https://api.polygon.io/v2/aggs/ticker/${stock_name}/range/1/day/2023-01-09/2023-02-10?adjusted=true&sort=asc&apiKey=zRfpponTPZJx86i5Vezn8VEivUng6cjO`
-
-    // Make a GET request to the external API
-    const response = await axios.get(apiUrl);
-
-    // Extract data from the response
-    const data = response.data.results[0].o;
-    console.log(data);
-
-    // Send the data as the response
-    res.json(data);
-
-})
 
 app.listen(port, () => console.log(`Exchange app listening on port ${port}!`))

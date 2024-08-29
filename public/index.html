@@ -4,44 +4,54 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Net Worth Chart</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3"></script>
-
 </head>
 <body>
-    <h1>Net Worth Chart</h1>
-    <canvas id="netWorthChart" width="800" height="400"></canvas>
+   <div><canvas id="netWorthChart" width="800" height="400"></canvas></div> 
+    <!-- Include Moment.js -->
+    <script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/min/moment.min.js"></script>
+    <!-- Include Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Include the date adapter for Moment.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-moment@1.0.0"></script>
     <script>
+      function convertToISO(dateString) {
+        return new Date(dateString + 'T00:00:00Z').toISOString();
+}
         async function fetchChartData() {
             try {
-                const response = await fetch('/chart'); // Assuming /chart is the endpoint that returns data
+                // Fetch the data from the server
+                const response = await fetch('/chart');
                 const data = await response.json();
 
-                if (!data.dates || !data.values) {
-                    throw new Error('Invalid data format');
-                }
-
+                console.log('Received data:', data); // Debugging: log received data
+                const isoDates = data.dates.map(convertToISO);
+                // Ensure the canvas element is selected
+                console.log(isoDates);
+                console.log(data.values)
+                console.log("TYP TO: ")
+                console.log(typeof(data.values[1]))
                 const ctx = document.getElementById('netWorthChart').getContext('2d');
+
+                // Create a new chart instance
                 new Chart(ctx, {
                     type: 'line',
                     data: {
-                        labels: data.dates, // X-axis labels
+                        labels: isoDates, // X-axis labels
                         datasets: [{
-                            label: 'Net Worth',
-                            data: data.values, // Y-axis data
+                            label: 'Net Worth Over Time',
+                            data: data.values.values, // Y-axis data
                             borderColor: 'rgba(75, 192, 192, 1)',
                             backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                            fill: false
+                            fill: true,
+                            tension: 0.1
                         }]
                     },
                     options: {
-                        responsive: true,
                         scales: {
                             x: {
                                 type: 'time',
                                 time: {
-                                    unit: 'day',
-                                    tooltipFormat: 'll' // Format for tooltips
+                                    unit: 'day'
                                 },
                                 title: {
                                     display: true,
@@ -52,9 +62,6 @@
                                 title: {
                                     display: true,
                                     text: 'Net Worth'
-                                },
-                                ticks: {
-                                    beginAtZero: true
                                 }
                             }
                         }
@@ -65,7 +72,7 @@
             }
         }
 
-        // Call the function to fetch data and display the chart
+        // Fetch the chart data and render the chart
         fetchChartData();
     </script>
 </body>
