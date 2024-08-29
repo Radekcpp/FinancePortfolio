@@ -22,13 +22,31 @@
     
     <div id="Home" class="tabcontent">
       <!-- The Hello message will be dynamically updated with the username -->
-      <center><h2 class="h2" id="helloMessage">Hello, </h2></center>
+      <center><h2 class="h2" id="helloMessage">Hello, </h2><br>
+        <h3 class="h3"><b>Net Worth:</b> <span id="netWorthDisplay"></span> USD</h3>
+        <h3 class="h3"><b>Total Profit:</b> <span id="profitDisplay"></span> USD</h3></center>
     
       <!-- Section to display user stock information -->
       <h3 class="h3" id="userStockInfo">Your stocks:</h3>
-    
+
       <!-- JavaScript to fetch and display data -->
       <script>
+        window.onload = function() {
+            fetch(`/calculate_profit_and_networth?username=${username}`) // Replace 'your_username' with the actual username or remove if not needed
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        alert(data.error);
+                    } else {
+                        document.getElementById('netWorthDisplay').innerText = data.net_worth.toFixed(2);
+                        document.getElementById('profitDisplay').innerText = data.profit.toFixed(2);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error calculating net worth and profit:', error);
+                    alert('An error occurred while fetching net worth and profit. Please try again.');
+                });
+        };
         // Retrieve the username from localStorage
         const username = localStorage.getItem('username');
     
