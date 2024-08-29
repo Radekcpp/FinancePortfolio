@@ -91,10 +91,55 @@
             <center><button type="submit" id="fetchDataButton"><b>Add</b></button>
             <div class="input-panel">
             <hr class="hr1"><br>
-            <center><input type="text" id="usernameInput" placeholder="Insert stock name" name="add" required />
+            <center><input type="text" id="stockNameInput" placeholder="Insert stock name" name="add" required />
             </div>
             <br>
-            <center><button type="submit" id="fetchDataButton"><b>Remove</b></button></center>
+            <center><button type="submit" id="removeStockButton"><b>Remove</b></button></center>
+
+            <script>
+              document.getElementById('removeStockButton').addEventListener('click', function() {
+                  const stockName = document.getElementById('stockNameInput').value.trim();
+          
+                  if (stockName === '') {
+                      alert('Please enter a stock name to remove.');
+                      return;
+                  }
+          
+                  // Fetch the stock data to find the ID based on the name
+                  fetch(`/get_stock_by_name?stockName=${encodeURIComponent(stockName)}`)
+                      .then(response => response.json())
+                      .then(data => {
+                          if (data && data.id) {
+                              const stockId = data.id;
+          
+                              const confirmDelete = confirm(`Are you sure you want to remove the stock: ${stockName}?`);
+                              if (!confirmDelete) return;
+          
+                              // Delete the stock using the retrieved ID
+                              fetch(`/delete_stock/${stockId}`, {
+                                  method: 'DELETE',
+                              })
+                              .then(response => {
+                                  if (response.ok) {
+                                      alert(`Stock "${stockName}" has been successfully removed.`);
+                                  } else {
+                                      alert('Failed to remove the stock. Please try again.');
+                                  }
+                              })
+                              .catch(error => {
+                                  console.error('Error removing stock:', error);
+                                  alert('An error occurred while removing the stock. Please try again.');
+                              });
+                          } else {
+                              alert(`Stock with name "${stockName}" not found.`);
+                          }
+                      })
+                      .catch(error => {
+                          console.error('Error fetching stock:', error);
+                          alert('An error occurred while fetching the stock. Please try again.');
+                      });
+              });
+          </script>
       </div>
     </div>
 
