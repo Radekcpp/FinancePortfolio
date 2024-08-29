@@ -8,7 +8,8 @@ const port = 3000;
 //const apiKey = "4bb4629b19c8d2e1fd3dd512"
 app.use(express.json());
 app.use(express.static('public'));
-const password = process.env.PASSWORD
+const password = process.env.PASSWORD;
+const apikey = process.env.APIKEY;
 const { Sequelize, DataTypes } = require("sequelize");
 
 const sequelize = new Sequelize('stock', 'root', password, {
@@ -99,17 +100,32 @@ app.put('/update_stock/:id', async (req, res) => {
 
 app.post('/add_stock', async (req, res) => {
 
-    const { username, stock_name, amount_bought, date_of_buying, price_per_share } = req.body;
-
+    const { username, stock_name, amount_bought, date_of_buying } = req.body;
+    //TODO: price per share taken from api not passed
+    const url = `https://api.polygon.io/v2/aggs/ticker/${stock_name}/range/1/day/${date_of_buying}/${date_of_buying}?apiKey=${apikey}`
+                            
     try {
-      const newStock = await Stock.create({ username, stock_name, amount_bought, date_of_buying, price_per_share});
-      console.log(newStock);
-      res.status(201).json({ message: 'Stock added successfully', id: newStock.id });
-    } catch (err) {
-      res.status(500).json({ error: err.message });
-    }
+        // Fetch the stock price from the API
+        const response = await axios.get(url);
+        const data = response.data;
 
+        // Ensure there is at least one result in the response
+        if (data.results && data.results.length > 0) {
+            const price_per_share = data.results[0].o;
+            
+            // Create the new stock entry with the fetched price_per_share
+            const newStock = await Stock.create({ username, stock_name, amount_bought, date_of_buying, price_per_share });
+            console.log(newStock);
+            res.status(201).json({ message: 'Stock added successfully', id: newStock.id });
+        } else {
+            res.status(404).json({ error: 'Wrong stock name' });
+        }
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: err.message });
+    }
 });
+
 
 app.delete('/delete_stock/:id', async (req, res) => {
     const stockId = req.params.id;
@@ -126,6 +142,7 @@ app.delete('/delete_stock/:id', async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 });
+
 
 
 app.listen(port, () => console.log(`Exchange app listening on port ${port}!`))
