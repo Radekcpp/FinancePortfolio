@@ -66,7 +66,7 @@
                   Date of Buying: ${item.date_of_buying} <br>
                   Price per Share: ${item.price_per_share}
                 </p>
-                <hr size=30>
+                <hr><br>
               `;
               // Insert the stock info into the userStockInfo div
               userStockInfo.insertAdjacentHTML('beforeend', stockInfo);
@@ -76,82 +76,30 @@
       </script>
     </div>
 
+
     <div id="News" class="tabcontent">
       <h2 class="h2">Update Your stocks</h2>
       <div class="container">
-        <label for="uname"><b>Choose stocks from the list</b></label>
         <form id="loginForm" action="/menu.html">
-          <div class="container">
-            <label for="username" class="label1"><b>Username</b></label>
-            <input type="text" id="usernameInput" placeholder="Enter Username" name="username" required />
-        
-            <button type="submit" id="fetchDataButton"><b>Login</b></button>
-          </div>
-        </form>
-        <div class="container">
-          <form id="loginForm" action="/menu.html">
-            <div class="container">
-              <label for="username" class="label1"><b>Username</b></label>
-              <input type="text" id="usernameInput" placeholder="Enter Username" name="username" required />
-          
-              <button type="submit" id="fetchDataButton"><b>Login</b></button>
+            <h4 class="h4">You can add or remove your stocks</h4><br>
+            <div class="input-panel">
+            <center><input type="text" id="usernameInput" placeholder="Insert stock name" name="add" required />
+            <input type="date" id="amount" placeholder="YYYY-MM-DD" name="Add amount" required />
+            <input type="number" id="productQuantity" placeholder="Enter quantity" min="1" /></center>
             </div>
-          </form>
-        
-          <div class="input-panel">
-            <p>Selected Product: <span id="selectedProduct">None</span></p>
-            <input type="number" id="productQuantity" placeholder="Enter quantity" min="1" />
-            <button onclick="addToCart()">Add to Cart</button>
-          </div>
-        
-          <div class="output-panel">
-            <h3>Shopping Cart</h3>
-            <ul id="cartList"></ul>
-          </div>
-        </div>
-<script>let selectedProduct = null;
-
-  function selectProduct(productName) {
-    selectedProduct = productName;
-    document.getElementById("selectedProduct").innerText = productName;
-  }
-  
-  function addToCart() {
-    if (selectedProduct) {
-      const quantity = document.getElementById("productQuantity").value;
-      if (quantity > 0) {
-        const cartList = document.getElementById("cartList");
-        const listItem = document.createElement("li");
-        listItem.innerText = `${selectedProduct}: ${quantity} units`;
-        cartList.appendChild(listItem);
-      } else {
-        alert("Please enter a valid quantity.");
-      }
-    } else {
-      alert("Please select a product first.");
-    }
-  }</script>
-        <input type="number" placeholder="Number of stocks" name="uname" required />
-
-        <button type="submit"><b>Login</b></button>
-      </div>
-      <div class="container">
-        <label for="uname"><b>Username</b></label>
-        <input type="text" placeholder="Enter Username" name="uname" required />
-
-        <button type="submit"><b>Login</b></button>
-      </div>
-      <div class="container">
-        <label for="uname"><b>Username</b></label>
-        <input type="text" placeholder="Enter Username" name="uname" required />
-
-        <button type="submit"><b>Login</b></button>
+            <br>
+            <center><button type="submit" id="fetchDataButton"><b>Add</b></button>
+            <div class="input-panel">
+            <hr class="hr1"><br>
+            <center><input type="text" id="usernameInput" placeholder="Insert stock name" name="add" required />
+            </div>
+            <br>
+            <center><button type="submit" id="fetchDataButton"><b>Remove</b></button></center>
       </div>
     </div>
 
     <div id="Contact" class="tabcontent">
-      <h3>Contact</h3>
-      <p>Get in touch, or swing by for a cup of coffee.</p>
+      <h2 class="h2">Track Your finances with charts</h2>
     </div>
 
     <div id="About" class="tabcontent">
