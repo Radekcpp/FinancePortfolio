@@ -9,6 +9,7 @@ const port = 3000;
 app.use(express.json());
 app.use(express.static('public'));
 const password = process.env.PASSWORD
+const apiKey = process.env.APIKEY
 const { Sequelize, DataTypes } = require("sequelize");
  
 const sequelize = new Sequelize('stock', 'root', password, {
@@ -120,8 +121,11 @@ app.post('/add_stock', async (req, res) => {
  
 app.get('/getting_current_price', async (req, res) => {
     const { stock_name } = req.query;
- 
-    const apiUrl = `https://api.polygon.io/v2/aggs/ticker/${stock_name}/range/1/day/2023-01-09/2023-02-10?adjusted=true&sort=asc&apiKey=zRfpponTPZJx86i5Vezn8VEivUng6cjO`
+    const today = new Date(); 
+    const year = today.getFullYear(); 
+    const month = String(today.getMonth() + 1).padStart(2, '0'); // Months are 0-based const day = String(today.getDate()).padStart(2, '0');
+    const date = `${year}-${month}-${day}`;
+    const apiUrl = `https://api.polygon.io/v2/aggs/ticker/${stock_name}/range/1/day/${date}/${date}?adjusted=true&sort=asc&apiKey=${apiKey}`
  
     // Make a GET request to the external API
     const response = await axios.get(apiUrl);
@@ -132,11 +136,8 @@ app.get('/getting_current_price', async (req, res) => {
  
     // Send the data as the response
     res.json(data);
- 
- 
- 
- 
-})
+
+});
 // TODO 3 : calculate profit and net worth
 // what stocks do i have, how many stocks each i have, check current price of  a stock * amount of stocks, and sum all.
 // Endpoint to calculate profit and net worth for a specific user

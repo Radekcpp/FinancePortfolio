@@ -76,7 +76,6 @@
       </script>
     </div>
 
-
     <div id="News" class="tabcontent">
       <h2 class="h2">Update Your stocks</h2>
       <div class="container">
@@ -139,17 +138,17 @@
                     });
                 });
             </script>
-            
+
             <div class="input-panel">
             <hr class="hr1"><br>
-            <center><input type="text" id="stockNameInput" placeholder="Insert stock name" name="add" required />
+            <center><input type="text" id="stockNameInput2" placeholder="Insert stock name" name="add" required />
             </div>
             <br>
             <center><button type="submit" id="removeStockButton"><b>Remove</b></button></center>
 
             <script>
               document.getElementById('removeStockButton').addEventListener('click', function() {
-                  const stockName = document.getElementById('stockNameInput').value.trim();
+                  const stockName = document.getElementById('stockNameInput2').value.trim();
           
                   if (stockName === '') {
                       alert('Please enter a stock name to remove.');
