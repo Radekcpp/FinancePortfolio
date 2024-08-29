@@ -2,7 +2,7 @@
 <html>
   <head>
     <title>Your Financial Portfolio Menu Page</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Allerta+Stencil"/>
     <link rel="stylesheet" href="menu_styles.css" />
   </head>
@@ -21,14 +21,11 @@
     </button>
     
     <div id="Home" class="tabcontent">
-        <!-- The Hello message will be dynamically updated with the username -->
-        <center><h2 class="h2" id="helloMessage">Hello, </h2></center>
-      <br>
-      
-        <!-- Section to display user stock information -->
-        <center><h2 class="h2" id="userStockInfo">Yours stocks:</h2></center>
-      
-
+      <!-- The Hello message will be dynamically updated with the username -->
+      <center><h2 class="h2" id="helloMessage">Hello, </h2></center>
+    
+      <!-- Section to display user stock information -->
+      <h3 class="h3" id="userStockInfo">Your stocks:</h3>
     
       <!-- JavaScript to fetch and display data -->
       <script>
@@ -57,17 +54,19 @@
             // Get the div where user stock info will be displayed
             const userStockInfo = document.getElementById('userStockInfo');
             
+            // Clear any previous stock information, if needed
+            userStockInfo.innerHTML += "<br>"; // Optional: Ensure there's a line break after "Your stocks:"
+            
             // Loop through each item in the data array and create elements to display the data
-            data.forEach(item => {
+            data.forEach((item, index) => {
               const stockInfo = `
                 <p>
-                  User Name: ${formatUsername(item.username)}<br>
-                  Stock Name: ${item.stock_name} <br>
+                  Stock ${index + 1}: ${item.stock_name} <br>
                   Amount Bought: ${item.amount_bought} <br>
                   Date of Buying: ${item.date_of_buying} <br>
                   Price per Share: ${item.price_per_share}
                 </p>
-                <hr>
+                <hr size=30>
               `;
               // Insert the stock info into the userStockInfo div
               userStockInfo.insertAdjacentHTML('beforeend', stockInfo);
@@ -78,24 +77,26 @@
     </div>
 
     <div id="News" class="tabcontent">
-      <h3>Update Your stocks</h3>
+      <h2 class="h2">Update Your stocks</h2>
       <div class="container">
         <label for="uname"><b>Choose stocks from the list</b></label>
-        <div class="container">
-          <div class="scroll-box">
-            <ul id="productList" class="item-list">
-              <li onclick="selectProduct('Sugar')">Sugar</li>
-              <li onclick="selectProduct('Milk')">Milk</li>
-              <li onclick="selectProduct('Bread')">Bread</li>
-              <li onclick="selectProduct('Eggs')">Eggs</li>
-              <li onclick="selectProduct('Butter')">Butter</li>
-              <li onclick="selectProduct('Cheese')">Cheese</li>
-              <li onclick="selectProduct('Apples')">Apples</li>
-              <li onclick="selectProduct('Bananas')">Bananas</li>
-              <li onclick="selectProduct('Tomatoes')">Tomatoes</li>
-              <li onclick="selectProduct('Potatoes')">Potatoes</li>
-            </ul>
+        <form id="loginForm" action="/menu.html">
+          <div class="container">
+            <label for="username" class="label1"><b>Username</b></label>
+            <input type="text" id="usernameInput" placeholder="Enter Username" name="username" required />
+        
+            <button type="submit" id="fetchDataButton"><b>Login</b></button>
           </div>
+        </form>
+        <div class="container">
+          <form id="loginForm" action="/menu.html">
+            <div class="container">
+              <label for="username" class="label1"><b>Username</b></label>
+              <input type="text" id="usernameInput" placeholder="Enter Username" name="username" required />
+          
+              <button type="submit" id="fetchDataButton"><b>Login</b></button>
+            </div>
+          </form>
         
           <div class="input-panel">
             <p>Selected Product: <span id="selectedProduct">None</span></p>

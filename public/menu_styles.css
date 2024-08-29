@@ -5,6 +5,9 @@
   /* Set height of body and the document to 100% */
   body,
   html {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
     height: 100%;
     margin: 0;
     font-family: Arial, Helvetica, sans-serif;
@@ -32,13 +35,18 @@
     text-align: center;
     font-size: 60px;
     font-weight: lighter;
-    margin-top: 10px;
+    margin: 5px 0; /* Adjust top and bottom margins as needed */
+    padding: 0; /* Remove padding */
+    line-height: 1.5; /* Adjust line height if needed */
   }
   .h3 {
-    text-align: center;
-    font-size: 60px;
+    text-align: left;
+    font-size: 20px;
     font-weight: lighter;
-    margin-top: 10px;
+    margin: 5px 0; /* Adjust top and bottom margins as needed */
+    margin-left: 200px;
+    padding: 0; /* Remove padding */
+    line-height: 1.5; /* Adjust line height if needed */
   }
   
   .p {
@@ -64,7 +72,7 @@
   
   #Home {
     position: relative; /* Required for the overlay positioning */
-    height: 100vh; /* Full viewport height */
+    height: 100%; /* Full viewport height */
     width: 100%; /* Full width */
     overflow: hidden;
   }
