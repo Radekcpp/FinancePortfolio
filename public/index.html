@@ -20,16 +20,12 @@
         async function fetchChartData() {
             try {
                 // Fetch the data from the server
-                const response = await fetch('/chart');
+                const response = await fetch('/chart?username=john_doe');
                 const data = await response.json();
 
-                console.log('Received data:', data); // Debugging: log received data
                 const isoDates = data.dates.map(convertToISO);
                 // Ensure the canvas element is selected
-                console.log(isoDates);
-                console.log(data.values)
-                console.log("TYP TO: ")
-                console.log(typeof(data.values[1]))
+
                 const ctx = document.getElementById('netWorthChart').getContext('2d');
 
                 // Create a new chart instance

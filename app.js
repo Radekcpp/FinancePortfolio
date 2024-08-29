@@ -5,7 +5,7 @@ require("dotenv").config();
 //Express Definition/Variables
 const app = express();
 const port = 3000;
-//const apiKey = "4bb4629b19c8d2e1fd3dd512"
+
 app.use(express.json());
 app.use(express.static('public'));
 const password = process.env.PASSWORD;
@@ -281,12 +281,34 @@ async function calculateNetWorth(stocks, amounts) {
 
 // Serve the chart
 app.get('/chart', async (req, res) => {
-    let stocks = [];
-    let amounts = [];
-    stocks.push("AMZN");
-    stocks.push("GOOGL");
-    amounts.push(60)
-    amounts.push(160)
+    // let stocks = [];
+    // let amounts = [];
+    // stocks.push("AMZN");
+    // stocks.push("GOOGL");
+    // amounts.push(60)
+    // amounts.push(160)
+    const { username } = req.query;
+
+    if (!username) {
+        return res.status(400).json({ error: 'Username is required' });
+    }
+
+
+    // Query the database for the user's stocks and amounts
+    const stocksInfo = await Stock.findAll({
+        where: { username },
+        attributes: ['stock_name', 'amount_bought']
+    });
+
+    console.log("STOCKSINFO");
+    console.log(stocksInfo);
+
+    const stocks = stocksInfo.map(stock => stock.dataValues.stock_name);
+    const amounts = stocksInfo.map(stock => stock.dataValues.amount_bought);
+
+
+    console.log(stocks);
+    console.log(amounts);
     const days = 64;
     const netWorths = await calculateNetWorth(stocks, amounts);
 
