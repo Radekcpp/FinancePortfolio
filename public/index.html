@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>AquaCrocs Finance Portfolio Login Page</title> 
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Allerta+Stencil"/>
+  </head>
+  <body>
+    <div class="titles">
+        <div class="w3-container w3-opaque w3-center w3-allerta">
+        <p class="w3-xxxlarge">AquaCrocs Solutions&trade;</p>
+        <p class="w3-xxxlarge">Welcome to Your financial protfolio</p>
+        </div>  
+    </div>
+
+    <ul class="background">
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+    </ul>
+    <ul class="background1">
+      <li></li>
+      <li></li>
+      <li></li>
+    </ul>
+
+<form action="/menu.html">
+      <div class="container">
+        <label for="username" class="label1"><b>Username</b></label>
+        <input type="text" id="usernameInput" placeholder="Enter Username" name="username" required />
+
+        <button type="submit" id="fetchDataButton"><b>Login</b></button>
+      </div>
+    </div>
+    </form>
+<script>
+  const username = document.getElementById('usernameInput').value;
+  localStorage.setItem('username', username)
+</script>  
+    <!-- <script>
+      document.getElementById('fetchDataButton').addEventListener('click', function() {
+          // Call the GET endpoint
+          fetch('/get_all_user_info')
+              .then(response => response.json())
+              .then(data => {
+                console.log('hello'); 
+                console.log(data); // Display the fetched data in the console
+
+                  // Redirect to menu.html
+                  window.location.href = 'menu.html';
+              })
+              .catch(error => {
+                  console.error('Error:', error);
+              });
+      });
+  </script> -->
+  </body>
+</html>
