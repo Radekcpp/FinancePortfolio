@@ -1,74 +1,72 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>AquaCrocs Finance Portfolio Login Page</title> 
-    <link rel="stylesheet" href="styles.css" />
-    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css" />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Allerta+Stencil"/>
-  </head>
-  <body>
-    <div class="titles">
-        <div class="w3-container w3-opaque w3-center w3-allerta">
-        <p class="w3-xxxlarge">AquaCrocs Solutions&trade;</p>
-        <p class="w3-xxxlarge">Welcome to Your financial protfolio</p>
-        </div>  
-    </div>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Net Worth Chart</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3"></script>
 
-    <ul class="background">
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-    </ul>
-    <ul class="background1">
-      <li></li>
-      <li></li>
-      <li></li>
-    </ul>
+</head>
+<body>
+    <h1>Net Worth Chart</h1>
+    <canvas id="netWorthChart" width="800" height="400"></canvas>
+    <script>
+        async function fetchChartData() {
+            try {
+                const response = await fetch('/chart'); // Assuming /chart is the endpoint that returns data
+                const data = await response.json();
 
-<form action="/menu.html">
-      <div class="container">
-        <label for="username" class="label1"><b>Username</b></label>
-        <input type="text" id="usernameInput" placeholder="Enter Username" name="username" required />
+                if (!data.dates || !data.values) {
+                    throw new Error('Invalid data format');
+                }
 
-        <button type="submit" id="fetchDataButton"><b>Login</b></button>
-      </div>
-    </div>
-    </form>
-<script>
-  const username = document.getElementById('usernameInput').value;
-  localStorage.setItem('username', username)
-</script>  
-    <!-- <script>
-      document.getElementById('fetchDataButton').addEventListener('click', function() {
-          // Call the GET endpoint
-          fetch('/get_all_user_info')
-              .then(response => response.json())
-              .then(data => {
-                console.log('hello'); 
-                console.log(data); // Display the fetched data in the console
+                const ctx = document.getElementById('netWorthChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: data.dates, // X-axis labels
+                        datasets: [{
+                            label: 'Net Worth',
+                            data: data.values, // Y-axis data
+                            borderColor: 'rgba(75, 192, 192, 1)',
+                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                            fill: false
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            x: {
+                                type: 'time',
+                                time: {
+                                    unit: 'day',
+                                    tooltipFormat: 'll' // Format for tooltips
+                                },
+                                title: {
+                                    display: true,
+                                    text: 'Date'
+                                }
+                            },
+                            y: {
+                                title: {
+                                    display: true,
+                                    text: 'Net Worth'
+                                },
+                                ticks: {
+                                    beginAtZero: true
+                                }
+                            }
+                        }
+                    }
+                });
+            } catch (error) {
+                console.error('Error fetching chart data:', error);
+            }
+        }
 
-                  // Redirect to menu.html
-                  window.location.href = 'menu.html';
-              })
-              .catch(error => {
-                  console.error('Error:', error);
-              });
-      });
-  </script> -->
-  </body>
+        // Call the function to fetch data and display the chart
+        fetchChartData();
+    </script>
+</body>
 </html>

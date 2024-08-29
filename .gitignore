@@ -7,6 +7,10 @@
 node_modules/
 dist/
 
+#BAD HTML 
+public/
+
+
 # Compiled Java class files
 *.class
 
