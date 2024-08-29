@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Your Financial Portfolio Menu Page</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Allerta+Stencil"/>
+    <link rel="stylesheet" href="menu_styles.css" />
+  </head>
+  <body>
+    <button class="tablink" onclick="openPage('Home', this)" id="defaultOpen">
+      Your portfolio
+    </button>
+    <button class="tablink" onclick="openPage('News', this, 'green')">
+      Update stocks
+    </button>
+    <button class="tablink" onclick="openPage('Contact', this, 'blue')">
+      Charts
+    </button>
+    <button class="tablink" onclick="openPage('About', this, 'orange')">
+      Random news
+    </button>
+    
+    <div id="Home" class="tabcontent">
+      <!-- The Hello message will be dynamically updated with the username -->
+      <center><h2 class="h2" id="helloMessage">Hello, </h2><br>
+        <h3 class="h3"><b>Net Worth:</b> <span id="netWorthDisplay"></span> USD</h3>
+        <h3 class="h3"><b>Total Profit:</b> <span id="profitDisplay"></span> USD</h3></center>
+    
+      <!-- Section to display user stock information -->
+      <h3 class="h3" id="userStockInfo">Your stocks:</h3>
+
+      <!-- JavaScript to fetch and display data -->
+      <script>
+        window.onload = function() {
+            fetch(`/calculate_profit_and_networth?username=${username}`) // Replace 'your_username' with the actual username or remove if not needed
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        alert(data.error);
+                    } else {
+                        document.getElementById('netWorthDisplay').innerText = data.net_worth.toFixed(2);
+                        document.getElementById('profitDisplay').innerText = data.profit.toFixed(2);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error calculating net worth and profit:', error);
+                    alert('An error occurred while fetching net worth and profit. Please try again.');
+                });
+        };
+        // Retrieve the username from localStorage
+        const username = localStorage.getItem('username');
+    
+        // Function to format the username correctly
+        function formatUsername(username) {
+          const [firstName, lastName] = username.split('_');
+          const formattedFirstName = firstName.charAt(0).toUpperCase() + firstName.slice(1).toLowerCase();
+          const formattedLastName = lastName.charAt(0).toUpperCase() + lastName.slice(1).toLowerCase();
+          return `${formattedFirstName} ${formattedLastName}`;
+        }
+    
+        // Fetch user information from the server
+        fetch(`/get_user_info?username=${username}`)
+          .then(response => response.json()) // Parse the JSON response from the server
+          .then(data => {
+            // Display the formatted username in the Hello message
+            const helloMessage = document.getElementById('helloMessage');
+            if (data.length > 0) {
+              const formattedName = formatUsername(data[0].username);
+              helloMessage.textContent += `${formattedName}!`;
+            }
+    
+            // Get the div where user stock info will be displayed
+            const userStockInfo = document.getElementById('userStockInfo');
+            
+            // Clear any previous stock information, if needed
+            userStockInfo.innerHTML += "<br>"; // Optional: Ensure there's a line break after "Your stocks:"
+            
+            // Loop through each item in the data array and create elements to display the data
+            data.forEach((item, index) => {
+              const stockInfo = `
+                <p>
+                  Stock ${index + 1}: ${item.stock_name} <br>
+                  Amount Bought: ${item.amount_bought} <br>
+                  Date of Buying: ${item.date_of_buying} <br>
+                  Price per Share: ${item.price_per_share} USD
+                </p>
+                <hr><br>
+              `;
+              // Insert the stock info into the userStockInfo div
+              userStockInfo.insertAdjacentHTML('beforeend', stockInfo);
+            });
+          })
+          .catch(error => console.error('Error fetching user info:', error));
+      </script>
+    </div>
+
+    <div id="News" class="tabcontent">
+      <h2 class="h2">Update Your stocks</h2>
+      <div class="container">
+        <form id="loginForm" action="/menu.html">
+            <h4 class="h4">You can add or remove your stocks</h4><br>
+            <div class="input-panel">
+              <center>
+                <input type="text" id="stockNameInput" placeholder="Insert stock name" name="stock_name" required />
+                <input type="date" id="dateInput" placeholder="YYYY-MM-DD" name="date_of_buying" required />
+                <input type="number" id="amountInput" placeholder="Enter quantity" name="amount_bought" min="1" required />
+                <input type="number" id="priceInput" placeholder="Enter price per share in USD" name="price_per_share" step="0.01" required />
+              </center>
+              <br>
+              <center><button type="button" id="addStockButton"><b>Add</b></button></center>
+            </div>
+            
+            <script>
+                document.getElementById('addStockButton').addEventListener('click', function() {
+                    const stockName = document.getElementById('stockNameInput').value.trim();
+                    const dateOfBuying = document.getElementById('dateInput').value;
+                    const amountBought = document.getElementById('amountInput').value;
+                    const pricePerShare = document.getElementById('priceInput').value;
+            
+                    if (stockName === '' || dateOfBuying === '' || amountBought === '' || pricePerShare === '') {
+                        alert('Please fill in all the fields.');
+                        return;
+                    }
+            
+                    const stockData = {
+                        username: localStorage.getItem('username'),  // Assuming username is stored in localStorage
+                        stock_name: stockName,
+                        amount_bought: amountBought,
+                        date_of_buying: dateOfBuying,
+                        price_per_share: pricePerShare
+                    };
+            
+                    fetch('/add_stock', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(stockData),
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.id) {
+                            alert(`Stock "${stockName}" added successfully.`);
+                            // Optionally, clear the form inputs
+                            document.getElementById('stockNameInput').value = '';
+                            document.getElementById('dateInput').value = '';
+                            document.getElementById('amountInput').value = '';
+                            document.getElementById('priceInput').value = '';
+                        } else {
+                            alert('Failed to add the stock. Please try again.');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error adding stock:', error);
+                        alert('An error occurred while adding the stock. Please try again.');
+                    });
+                });
+            </script>
+
+            <div class="input-panel">
+            <hr class="hr1"><br>
+            <center><input type="text" id="stockNameInput2" placeholder="Insert stock name" name="add" required />
+            </div>
+            <br>
+            <center><button type="submit" id="removeStockButton"><b>Remove</b></button></center>
+
+            <script>
+              document.getElementById('removeStockButton').addEventListener('click', function() {
+                  const stockName = document.getElementById('stockNameInput2').value.trim();
+          
+                  if (stockName === '') {
+                      alert('Please enter a stock name to remove.');
+                      return;
+                  }
+          
+                  // Fetch the stock data to find the ID based on the name
+                  fetch(`/get_stock_by_name?stockName=${encodeURIComponent(stockName)}`)
+                      .then(response => response.json())
+                      .then(data => {
+                          if (data && data.id) {
+                              const stockId = data.id;
+          
+                              const confirmDelete = confirm(`Are you sure you want to remove the stock: ${stockName}?`);
+                              if (!confirmDelete) return;
+          
+                              // Delete the stock using the retrieved ID
+                              fetch(`/delete_stock/${stockId}`, {
+                                  method: 'DELETE',
+                              })
+                              .then(response => {
+                                  if (response.ok) {
+                                      alert(`Stock "${stockName}" has been successfully removed.`);
+                                  } else {
+                                      alert('Failed to remove the stock. Please try again.');
+                                  }
+                              })
+                              .catch(error => {
+                                  console.error('Error removing stock:', error);
+                                  alert('An error occurred while removing the stock. Please try again.');
+                              });
+                          } else {
+                              alert(`Stock with name "${stockName}" not found.`);
+                          }
+                      })
+                      .catch(error => {
+                          console.error('Error fetching stock:', error);
+                          alert('An error occurred while fetching the stock. Please try again.');
+                      });
+              });
+          </script>
+      </div>
+    </div>
+
+    <div id="Contact" class="tabcontent">
+      <h2 class="h2">Track Your finances with charts</h2>
+    </div>
+
+    <div id="About" class="tabcontent">
+      <h3 class="h3">Let us show You some random news from WikiNews</h3>
+      <p>
+        <iframe
+          id="wikiFrame"
+          src="https://newsapi.org/v2/everything?q=tesla&from=2024-07-29&sortBy=publishedAt&apiKey=API_KEY"
+          style="width: 80%; height: 500px; border: none; margin-left: 200px"
+        ></iframe>
+      </p>
+      <div class="button-container">
+        <button onclick="refreshFrame()">Refresh</button>
+      </div>
+    </div>
+
+    <script>
+      function refreshFrame() {
+        var iframe = document.getElementById("wikiFrame");
+        iframe.src = iframe.src; // Reloads the iframe by setting the src attribute to itself
+      }
+    </script>
+
+    <script>
+      function openPage(pageName, elmnt) {
+        var i, tabcontent, tablinks;
+
+        // Hide all tab contents
+        tabcontent = document.getElementsByClassName("tabcontent");
+        for (i = 0; i < tabcontent.length; i++) {
+          tabcontent[i].style.display = "none";
+        }
+
+        // Remove background color from all buttons
+        tablinks = document.getElementsByClassName("tablink");
+        for (i = 0; i < tablinks.length; i++) {
+          tablinks[i].style.backgroundColor = "";
+        }
+
+        // Show the current tab content
+        document.getElementById(pageName).style.display = "block";
+
+        // Get the background color of the tab content and apply it to the button
+        var backgroundColor = window.getComputedStyle(
+          document.getElementById(pageName)
+        ).backgroundColor;
+        elmnt.style.backgroundColor = backgroundColor;
+      }
+
+      // Automatically click on the default open tab
+      document.getElementById("defaultOpen").click();
+    </script>
+  </body>
+</html>
