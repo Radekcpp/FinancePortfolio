@@ -1,45 +1,44 @@
-**Edit a file, create a new file, and clone from Bitbucket in under 2 minutes**
+AQUACROCS PORTFOLIO MANAGEMENT
 
-When you're done, you can delete the content in this README and update the file with details for others getting started with your repository.
+TABLE OF CONTENTS :
+1) GEETING STARTED
+2) OVERVIEW
+3) TECHNICAL GOALS
+4) TECHNOLOGIES USED
+5) HOW TO USE IT
+6) API ENDPOINTS
 
-*We recommend that you open this README in another tab as you perform the tasks below. You can [watch our video](https://youtu.be/0ocf7u76WSo) for a full demo of all the steps in this tutorial. Open the video in a new tab to avoid leaving Bitbucket.*
+GETING STARTED
+-First, node.js with npm needs to be installed.
+-Clone the repository. (git clone <link>)
+-Install dependencies from package.json. (npm install)
+-Configure database and create .env file and store database password and apikey from polygon.io. 
 
----
+OVERVIEW : 
+The Aquacrocs Portfolio Management is a web application designed to manage a financial portfolio. Users can view, add, update, and remove their stocks, track their portfolio's performance, and view their net worth and profit. The application includes both a backend REST API and a frontend interface, with data stored in a MySQL database running on a Docker container.
 
-## Edit a file
+TECHNICAL GOALS : 
+-Backend: Develops a robust REST API to handle stock data management, including Create, Read, Update, and Delete (CRUD) operations for stock records. It also provides functionality to calculate net worth and profit based on user portfolios and integrates with the Polygon.io API to fetch real-time and historical stock prices for accurate updates and calculations.
 
-You’ll start by editing this README file to learn how to edit a file in Bitbucket.
+-Frontend: Provides an intuitive user interface that allows users to interact with the backend API. Features include viewing and managing portfolio details, updating stock information, and tracking financial performance through a well-organized dashboard.
 
-1. Click **Source** on the left side.
-2. Click the README.md link from the list of files.
-3. Click the **Edit** button.
-4. Delete the following text: *Delete this line to make a change to the README from Bitbucket.*
-5. After making your change, click **Commit** and then **Commit** again in the dialog. The commit page will open and you’ll see the change you just made.
-6. Go back to the **Source** page.
+-Database: Utilizes MySQL for persistent storage of stock data. The MySQL database runs in a Docker container, ensuring a consistent and isolated environment for data management, which facilitates easy setup and scalability.
 
----
+TECHNOLOGIES USED: 
+-Backend: Node.js, Express, Sequelize
+-Frontend: HTML, JavaScrpt, CSS
+-Database: MySQL (Dockerized)
+-External APIs: Polygon.io
+-Project Management: JIRA (Kanban board)
+-Version Control: Bitbucket, GitHub
 
-## Create a file
 
-Next, you’ll add a new file to this repository.
-
-1. Click the **New file** button at the top of the **Source** page.
-2. Give the file a filename of **contributors.txt**.
-3. Enter your name in the empty file space.
-4. Click **Commit** and then **Commit** again in the dialog.
-5. Go back to the **Source** page.
-
-Before you move on, go ahead and explore the repository. You've already seen the **Source** page, but check out the **Commits**, **Branches**, and **Settings** pages.
-
----
-
-## Clone a repository
-
-Use these steps to clone from SourceTree, our client for using the repository command-line free. Cloning allows you to work on your files locally. If you don't yet have SourceTree, [download and install first](https://www.sourcetreeapp.com/). If you prefer to clone from the command line, see [Clone a repository](https://confluence.atlassian.com/x/4whODQ).
-
-1. You’ll see the clone button under the **Source** heading. Click that button.
-2. Now click **Check out in SourceTree**. You may need to create a SourceTree account or log in.
-3. When you see the **Clone New** dialog in SourceTree, update the destination path and name if you’d like to and then click **Clone**.
-4. Open the directory you just created to see your repository’s files.
-
-Now that you're more familiar with your Bitbucket repository, go ahead and add a new file locally. You can [push your change back to Bitbucket with SourceTree](https://confluence.atlassian.com/x/iqyBMg), or you can [add, commit,](https://confluence.atlassian.com/x/8QhODQ) and [push from the command line](https://confluence.atlassian.com/x/NQ0zDQ).
+API ENDPOINTS : 
+GET /get_all_user_info: Retrieves all stock information for all users.
+GET /get_user_info: Fetches stock information for a specific user by username.
+PUT /update_stock/:id: Updates the amount bought and purchase date of a specific stock by ID.
+POST /add_stock: Adds a new stock entry to the database.
+GET /getting_current_price: Retrieves the current price of a specified stock.
+GET /calculate_profit_and_networth: Calculates and returns the profit and net worth for a specific user.
+GET /get_stock_by_name: Retrieves stock ID based on the stock name.
+DELETE /delete_stock/:id: Deletes a specific stock entry by ID.
